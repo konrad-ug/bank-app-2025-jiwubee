@@ -1,0 +1,26 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.9, pytest-8.4.2, pluggy-1.6.0
+rootdir: /home/jiwubee/Desktop/testowanie/bank-app-2025-jiwubee
+plugins: cov-7.0.0, anyio-4.8.0
+collected 15 items
+
+tests/unit/test_account_create.py ......                                 [ 40%]
+tests/unit/test_transfer.py ........F                                    [100%]
+
+=================================== FAILURES ===================================
+_____________ TestTransfer.test_express_transfer_company_negative ______________
+
+self = <test_transfer.TestTransfer object at 0x7f8dbd15d550>
+
+    def test_express_transfer_company_negative(self):
+        company_account = CompanyAccount("Kremówki SA", "1234567890")
+        company_account.balance == 100
+        company_account.express_transfer(100)
+>       assert company_account.balance == -5
+E       assert 0 == -5
+E        +  where 0 = <src.company_account.CompanyAccount object at 0x7f8dbd179490>.balance
+
+tests/unit/test_transfer.py:50: AssertionError
+=========================== short test summary info ============================
+FAILED tests/unit/test_transfer.py::TestTransfer::test_express_transfer_company_negative
+========================= 1 failed, 14 passed in 0.04s =========================

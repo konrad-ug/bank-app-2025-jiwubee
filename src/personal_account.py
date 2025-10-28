@@ -5,9 +5,10 @@ class PersonalAccount(Account):
         self.first_name = first_name
         self.last_name = last_name
         self.balance = 0.0
-        self.promo_code = promo_code
         self.national_id = self.validate_national_id(national_id)
+        self.promo_code = promo_code
         self.validate_promo()
+        self.history = []
 
     def validate_national_id(self, national_id):
         if len(national_id) == 11 and national_id.isdigit():

@@ -5,6 +5,7 @@ class CompanyAccount(Account):
         self.name = name
         self.tax_number = self.validate_tax_number(tax_number)
         self.balance = 0
+        self.history = []
         
     def validate_tax_number(self, number):
         if len(number) == 10:

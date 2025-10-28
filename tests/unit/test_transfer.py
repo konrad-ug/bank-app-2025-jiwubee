@@ -48,3 +48,16 @@ class TestTransfer:
         company_account.balance = 100
         company_account.express_transfer(100)
         assert company_account.balance == -5
+
+class TestHistory:
+    def test_personal_account_history(self):
+        account = PersonalAccount("John", "Doe", "12345678901")
+        account.incoming_transfer(500)
+        account.express_transfer(300)
+        assert account.history == [500, -300, -1]
+    def test_company_account_history(self):
+        account = CompanyAccount("Kremówki SA", "1234567890")
+        account.incoming_transfer(500)
+        account.express_transfer(300)
+        assert account.history == [500, -300, -5]
+

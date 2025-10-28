@@ -36,7 +36,6 @@ jobs:
       - name: Unit test with coverage
         run: |
           python3 -m coverage run --source=src -m pytest
-          python3 -m coverage report --fail-under=100
       - name: Show coverage report in terminal
         run: |
           python3 -m coverage report --fail-under=100

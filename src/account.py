@@ -1,4 +1,5 @@
 class Account: 
+    history = []
     def incoming_transfer(self, amount):
         self.balance += amount
     

@@ -28,3 +28,12 @@ class PersonalAccount(Account):
         ):
             if self.get_birth_from_national_id(self.national_id) > 1960:
                 self.balance += 50.0
+    def submit_for_loan(self, amount):
+        if len(self.history) >= 3 and all(val > 0 for val in self.history):
+            self.balance += amount
+            return True
+        elif len(self.history) >= 5 and sum(self.history) > amount:
+            self.balance += amount
+            return True
+        else:
+            return False

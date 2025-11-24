@@ -1,41 +1,72 @@
-from src.account import Account
+import pytest
 from src.personal_account import PersonalAccount
 from src.company_account import CompanyAccount
 
+@pytest.fixture
+def valid_personal_data():
+    return ("John", "Doe")
+
+
+@pytest.fixture
+def valid_company_name():
+    return "Kremówki SA"
+
 class TestPersonalAccount:
-    def test_account_creation(self):
-        account = PersonalAccount("John", "Doe", "12345678901")
-        assert account.first_name == "John"
-        assert account.last_name == "Doe"
+
+    def test_account_creation(self, valid_personal_data):
+        first, last = valid_personal_data
+        account = PersonalAccount(first, last, "12345678901")
+        assert account.first_name == first
+        assert account.last_name == last
         assert account.balance == 0.0
         assert account.national_id == "12345678901"
-    def test_account_invalid_national_id(self):
-        too_long = PersonalAccount("John", "Doe", "1234567890123")
-        too_short = PersonalAccount("John", "Doe", "123")
-        invalid = PersonalAccount("John", "Doe", "abc")
-        assert too_long.national_id == "Invalid"
-        assert too_short.national_id == "Invalid"
-        assert invalid.national_id == "Invalid"
-    def test_account_promo_code(self):
-        valid_code = PersonalAccount("John", "Doe", "87110745612", "PROM_XYZ")
-        none_code = PersonalAccount("John", "Doe", "12345678901")
-        wrong_code = PersonalAccount("John", "Doe", "12345678901", "PROMOXYZ")
-        assert valid_code.balance == 50.0
-        assert none_code.balance == 0.0
-        assert wrong_code.balance == 0.0
-    def test_age_validation(self):
-        valid_age = PersonalAccount("John", "Doe", "87110745612", "PROM_XYZ")
-        invalid_age = PersonalAccount("John", "Doe", "55031412347", "PROM_XYZ")
-        assert valid_age.balance == 50.0
-        assert invalid_age.balance == 0.0
+
+    @pytest.mark.parametrize("national_id", [
+        "1234567890123",  # too long
+        "123",            # too short
+        "abc"             # non-numeric
+    ])
+    def test_account_invalid_national_id(self, valid_personal_data, national_id):
+        first, last = valid_personal_data
+        account = PersonalAccount(first, last, national_id)
+        assert account.national_id == "Invalid"
+
+    @pytest.mark.parametrize(
+        "pesel,promo_code,expected_balance",
+        [
+            ("87110745612", "PROM_XYZ", 50.0),   # valid age + valid code
+            ("12345678901", None, 0.0),          # no promo
+            ("12345678901", "PROMOXYZ", 0.0),    # invalid promo code
+        ]
+    )
+    def test_account_promo_code(self, valid_personal_data, pesel, promo_code, expected_balance):
+        first, last = valid_personal_data
+        account = PersonalAccount(first, last, pesel, promo_code)
+        assert account.balance == expected_balance
+
+    @pytest.mark.parametrize(
+        "pesel,expected_balance",
+        [
+            ("87110745612", 50.0),  # born after 1960 → promo applies
+            ("55031412347", 0.0),   # born before 1960 → promo ignored
+        ]
+    )
+    def test_age_validation(self, valid_personal_data, pesel, expected_balance):
+        first, last = valid_personal_data
+        account = PersonalAccount(first, last, pesel, "PROM_XYZ")
+        assert account.balance == expected_balance
 
 class TestCompanyAccount:
-    def test_create__company_account(self):
-        company_account = CompanyAccount("Kremówki SA", "1234567890")
-        assert company_account.name == "Kremówki SA"
+
+    def test_create_company_account(self, valid_company_name):
+        company_account = CompanyAccount(valid_company_name, "1234567890")
+        assert company_account.name == valid_company_name
         assert company_account.tax_number == "1234567890"
-    def test_create_company_account_invalid_tax_number(self):
-        company_account_too_long = CompanyAccount("Kremówki SA", "12345678901")
-        company_account_too_short = CompanyAccount("Kremówki SA", "1234590")
-        assert company_account_too_long.tax_number == "Invalid"
-        assert company_account_too_short.tax_number == "Invalid"
+
+    @pytest.mark.parametrize("tax_number", [
+        "12345678901",   # too long
+        "1234590"        # too short
+    ])
+    def test_create_company_account_invalid_tax_number(self, valid_company_name, tax_number):
+        company_account = CompanyAccount(valid_company_name, tax_number)
+        assert company_account.tax_number == "Invalid"

@@ -28,7 +28,7 @@ class TestLoan:
         assert result == expected_success
         assert personal_account.balance == expected_balance
 
-class testCompanyLoan:
+class TestCompanyLoan:
     @pytest.mark.parametrize(
         "balance, history, loan_amount, expected_result, expected_balance",
         [
@@ -39,9 +39,9 @@ class testCompanyLoan:
         ]
     )
 
-    def test_take_loan(company, balance, history, loan_amount, expected_result, expected_balance):
-        company.balance = balance
-        company.history = history
-        result = company.take_loan(loan_amount)
+    def test_take_loan(self,company_account, balance, history, loan_amount, expected_result, expected_balance):
+        company_account.balance = balance
+        company_account.history = history
+        result = company_account.take_loan(loan_amount)
         assert result == expected_result
-        assert company.balance == expected_balance
+        assert company_account.balance == expected_balance

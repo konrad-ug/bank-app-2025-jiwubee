@@ -12,3 +12,11 @@ class CompanyAccount(Account):
             return number
         else:
             return "Invalid"
+
+    def take_loan(self, amount):
+        has_zus_payment = -1775 in self.history
+        enough_balance = self.balance >= 2* amount
+        if has_zus_payment and enough_balance:
+            self.balance += amount
+            return True
+        return False

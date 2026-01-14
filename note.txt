@@ -1,9 +1,242 @@
 ============================= test session starts ==============================
-platform linux -- Python 3.14.2, pytest-8.4.2, pluggy-1.6.0
+platform linux -- Python 3.14.2, pytest-8.4.2, pluggy-1.6.0 -- /usr/bin/python3
+cachedir: .pytest_cache
 rootdir: /home/jiwubee/studia/sem3/testowanie/bank-app-2025-jiwubee
 plugins: anyio-4.11.0
-collected 13 items
+collecting ... collected 11 items
 
-app/api_test/account_crud.py .............                               [100%]
+app/api_test/test_transfer.py::TestTransferAPI::test_incoming_transfer_success ERROR [  9%]
+app/api_test/test_transfer.py::TestTransferAPI::test_outgoing_transfer_success ERROR [ 18%]
+app/api_test/test_transfer.py::TestTransferAPI::test_outgoing_transfer_insufficient_funds ERROR [ 27%]
+app/api_test/test_transfer.py::TestTransferAPI::test_express_transfer_success ERROR [ 36%]
+app/api_test/test_transfer.py::TestTransferAPI::test_express_transfer_insufficient_funds ERROR [ 45%]
+app/api_test/test_transfer.py::TestTransferAPI::test_transfer_account_not_found PASSED [ 54%]
+app/api_test/test_transfer.py::TestTransferAPI::test_transfer_invalid_type ERROR [ 63%]
+app/api_test/test_transfer.py::TestTransferAPI::test_transfer_missing_amount ERROR [ 72%]
+app/api_test/test_transfer.py::TestTransferAPI::test_transfer_negative_amount ERROR [ 81%]
+app/api_test/test_transfer.py::TestTransferAPI::test_transfer_zero_amount ERROR [ 90%]
+app/api_test/test_transfer.py::TestTransferAPI::test_multiple_transfers_sequence ERROR [100%]
 
-============================== 13 passed in 0.17s ==============================
+==================================== ERRORS ====================================
+_______ ERROR at setup of TestTransferAPI.test_incoming_transfer_success _______
+
+api_url = 'http://localhost:5000'
+
+    @pytest.fixture
+    def account_with_pesel(api_url):
+        """Fixture tworzący konto z PESELem i zwracający dane"""
+        pesel = "91050612345"
+        response = requests.post(
+            f"{api_url}/api/accounts",
+            json={
+                'name': 'Test User',
+                'balance': 1000,
+                'pesel':  pesel
+            }
+        )
+>       assert response.status_code == 201
+E       assert 409 == 201
+E        +  where 409 = <Response [409]>.status_code
+
+app/api_test/test_transfer.py:23: AssertionError
+_______ ERROR at setup of TestTransferAPI.test_outgoing_transfer_success _______
+
+api_url = 'http://localhost:5000'
+
+    @pytest.fixture
+    def account_with_pesel(api_url):
+        """Fixture tworzący konto z PESELem i zwracający dane"""
+        pesel = "91050612345"
+        response = requests.post(
+            f"{api_url}/api/accounts",
+            json={
+                'name': 'Test User',
+                'balance': 1000,
+                'pesel':  pesel
+            }
+        )
+>       assert response.status_code == 201
+E       assert 409 == 201
+E        +  where 409 = <Response [409]>.status_code
+
+app/api_test/test_transfer.py:23: AssertionError
+_ ERROR at setup of TestTransferAPI.test_outgoing_transfer_insufficient_funds __
+
+api_url = 'http://localhost:5000'
+
+    @pytest.fixture
+    def account_with_low_balance(api_url):
+        """Fixture tworzący konto z niskim saldem"""
+        pesel = "89030198765"
+        response = requests.post(
+            f"{api_url}/api/accounts",
+            json={
+                'name':  'Poor User',
+                'balance': 50,
+                'pesel': pesel
+            }
+        )
+>       assert response.status_code == 201
+E       assert 409 == 201
+E        +  where 409 = <Response [409]>.status_code
+
+app/api_test/test_transfer.py:38: AssertionError
+_______ ERROR at setup of TestTransferAPI.test_express_transfer_success ________
+
+api_url = 'http://localhost:5000'
+
+    @pytest.fixture
+    def account_with_high_balance(api_url):
+        """Fixture tworzący konto z wysokim saldem"""
+        pesel = "93120787654"
+        response = requests. post(
+            f"{api_url}/api/accounts",
+            json={
+                'name': 'Rich User',
+                'balance': 10000,
+                'pesel':  pesel
+            }
+        )
+>       assert response.status_code == 201
+E       assert 409 == 201
+E        +  where 409 = <Response [409]>.status_code
+
+app/api_test/test_transfer.py:53: AssertionError
+__ ERROR at setup of TestTransferAPI.test_express_transfer_insufficient_funds __
+
+api_url = 'http://localhost:5000'
+
+    @pytest.fixture
+    def account_with_low_balance(api_url):
+        """Fixture tworzący konto z niskim saldem"""
+        pesel = "89030198765"
+        response = requests.post(
+            f"{api_url}/api/accounts",
+            json={
+                'name':  'Poor User',
+                'balance': 50,
+                'pesel': pesel
+            }
+        )
+>       assert response.status_code == 201
+E       assert 409 == 201
+E        +  where 409 = <Response [409]>.status_code
+
+app/api_test/test_transfer.py:38: AssertionError
+_________ ERROR at setup of TestTransferAPI.test_transfer_invalid_type _________
+
+api_url = 'http://localhost:5000'
+
+    @pytest.fixture
+    def account_with_pesel(api_url):
+        """Fixture tworzący konto z PESELem i zwracający dane"""
+        pesel = "91050612345"
+        response = requests.post(
+            f"{api_url}/api/accounts",
+            json={
+                'name': 'Test User',
+                'balance': 1000,
+                'pesel':  pesel
+            }
+        )
+>       assert response.status_code == 201
+E       assert 409 == 201
+E        +  where 409 = <Response [409]>.status_code
+
+app/api_test/test_transfer.py:23: AssertionError
+________ ERROR at setup of TestTransferAPI.test_transfer_missing_amount ________
+
+api_url = 'http://localhost:5000'
+
+    @pytest.fixture
+    def account_with_pesel(api_url):
+        """Fixture tworzący konto z PESELem i zwracający dane"""
+        pesel = "91050612345"
+        response = requests.post(
+            f"{api_url}/api/accounts",
+            json={
+                'name': 'Test User',
+                'balance': 1000,
+                'pesel':  pesel
+            }
+        )
+>       assert response.status_code == 201
+E       assert 409 == 201
+E        +  where 409 = <Response [409]>.status_code
+
+app/api_test/test_transfer.py:23: AssertionError
+_______ ERROR at setup of TestTransferAPI.test_transfer_negative_amount ________
+
+api_url = 'http://localhost:5000'
+
+    @pytest.fixture
+    def account_with_pesel(api_url):
+        """Fixture tworzący konto z PESELem i zwracający dane"""
+        pesel = "91050612345"
+        response = requests.post(
+            f"{api_url}/api/accounts",
+            json={
+                'name': 'Test User',
+                'balance': 1000,
+                'pesel':  pesel
+            }
+        )
+>       assert response.status_code == 201
+E       assert 409 == 201
+E        +  where 409 = <Response [409]>.status_code
+
+app/api_test/test_transfer.py:23: AssertionError
+_________ ERROR at setup of TestTransferAPI.test_transfer_zero_amount __________
+
+api_url = 'http://localhost:5000'
+
+    @pytest.fixture
+    def account_with_pesel(api_url):
+        """Fixture tworzący konto z PESELem i zwracający dane"""
+        pesel = "91050612345"
+        response = requests.post(
+            f"{api_url}/api/accounts",
+            json={
+                'name': 'Test User',
+                'balance': 1000,
+                'pesel':  pesel
+            }
+        )
+>       assert response.status_code == 201
+E       assert 409 == 201
+E        +  where 409 = <Response [409]>.status_code
+
+app/api_test/test_transfer.py:23: AssertionError
+______ ERROR at setup of TestTransferAPI.test_multiple_transfers_sequence ______
+
+api_url = 'http://localhost:5000'
+
+    @pytest.fixture
+    def account_with_pesel(api_url):
+        """Fixture tworzący konto z PESELem i zwracający dane"""
+        pesel = "91050612345"
+        response = requests.post(
+            f"{api_url}/api/accounts",
+            json={
+                'name': 'Test User',
+                'balance': 1000,
+                'pesel':  pesel
+            }
+        )
+>       assert response.status_code == 201
+E       assert 409 == 201
+E        +  where 409 = <Response [409]>.status_code
+
+app/api_test/test_transfer.py:23: AssertionError
+=========================== short test summary info ============================
+ERROR app/api_test/test_transfer.py::TestTransferAPI::test_incoming_transfer_success
+ERROR app/api_test/test_transfer.py::TestTransferAPI::test_outgoing_transfer_success
+ERROR app/api_test/test_transfer.py::TestTransferAPI::test_outgoing_transfer_insufficient_funds
+ERROR app/api_test/test_transfer.py::TestTransferAPI::test_express_transfer_success
+ERROR app/api_test/test_transfer.py::TestTransferAPI::test_express_transfer_insufficient_funds
+ERROR app/api_test/test_transfer.py::TestTransferAPI::test_transfer_invalid_type
+ERROR app/api_test/test_transfer.py::TestTransferAPI::test_transfer_missing_amount
+ERROR app/api_test/test_transfer.py::TestTransferAPI::test_transfer_negative_amount
+ERROR app/api_test/test_transfer.py::TestTransferAPI::test_transfer_zero_amount
+ERROR app/api_test/test_transfer.py::TestTransferAPI::test_multiple_transfers_sequence
+========================= 1 passed, 10 errors in 0.19s =========================

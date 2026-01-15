@@ -53,7 +53,7 @@ class TestPersonalAccount:
         result = PersonalAccount.get_birth_from_national_id("87110745612")
         assert result == 1987
 
-class TestCompanyAccount:
+class TestCompanyAccount: # pragma: no cover
 
     def test_create_company_account(self, valid_company_name):
         company_account = CompanyAccount(valid_company_name, "1234567890")

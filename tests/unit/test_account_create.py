@@ -1,5 +1,6 @@
 import pytest
-import date
+from datetime import date
+import os
 from src.personal_account import PersonalAccount
 from src.company_account import CompanyAccount
 
@@ -80,8 +81,8 @@ class TestCompanyAccount:
             }
         }
 
-    mocker.patch("requests.get", return_value=mock_response)
+        mocker.patch("requests.get", return_value=mock_response)
 
-    account = CompanyAccount(valid_company_name, "8461627563")
+        account = CompanyAccount(valid_company_name, "8461627563")
 
-    assert account.tax_number == "8461627563"
+        assert account.tax_number == "8461627563"

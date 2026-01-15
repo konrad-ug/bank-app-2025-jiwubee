@@ -1,7 +1,6 @@
 import requests
 import os
-import date
-import mocker
+from datetime import date
 from .account import Account
 class CompanyAccount(Account):
     express_transfer_fee = 5

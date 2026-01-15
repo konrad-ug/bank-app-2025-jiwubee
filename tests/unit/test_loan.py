@@ -13,7 +13,7 @@ def company_account():
 
 class TestLoan:
 
-    @pytest.mark.parametrize(
+    @pytest.mark. parametrize(
         "history,loan_amount,expected_success,expected_balance",
         [
             ([100, 50, 300], 100, True, 100),
@@ -29,7 +29,7 @@ class TestLoan:
         assert result == expected_success
         assert personal_account.balance == expected_balance
 
-class TestCompanyLoan: 
+class TestCompanyLoan:  
     @pytest.mark.parametrize(
         "balance, history, loan_amount, expected_result, expected_balance",
         [

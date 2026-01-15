@@ -10,7 +10,7 @@ def personal_account():
 def company_account():
     return CompanyAccount("Kremówki SA", "1234567890")
 
-class TestTransfer: 
+class TestTransfer:  
 
     @pytest.mark.parametrize(
         "amount,expected_balance",
@@ -21,7 +21,7 @@ class TestTransfer:
     )
     def test_incoming_transfer(self, personal_account, amount, expected_balance):
         personal_account.incoming_transfer(amount)
-        assert personal_account.balance == expected_balance
+        assert personal_account. balance == expected_balance
         assert amount in personal_account.history
 
     @pytest.mark.parametrize(
@@ -47,7 +47,7 @@ class TestTransfer:
         ]
     )
     def test_express_transfer_personal(self, personal_account, initial_balance, amount, expected_balance):
-        personal_account.balance = initial_balance
+        personal_account. balance = initial_balance
         result = personal_account.express_transfer(amount)
         assert personal_account.balance == expected_balance
         assert result == expected_balance
@@ -68,7 +68,7 @@ class TestTransfer:
 
 class TestHistory:
 
-    @pytest.mark.parametrize(
+    @pytest.mark. parametrize(
         "account_fixture,expected",
         [
             ("personal_account", [500, -300, -1]),

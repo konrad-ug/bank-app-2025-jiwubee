@@ -10,7 +10,7 @@ def personal_account():
 def company_account():
     return CompanyAccount("Kremówki SA", "1234567890")
 
-class TestTransfer:
+class TestTransfer: 
 
     @pytest.mark.parametrize(
         "amount,expected_balance",
@@ -33,7 +33,7 @@ class TestTransfer:
     def test_outgoing_transfer(self, personal_account, initial_balance, amount, expected_balance):
         personal_account.balance = initial_balance
         personal_account.outgoing_transfer(amount)
-        assert personal_account.balance == expected_balance
+        assert personal_account. balance == expected_balance
 
     @pytest.mark.parametrize(
         "initial_balance,amount,expected_balance",
@@ -57,9 +57,15 @@ class TestTransfer:
         ]
     )
     def test_express_transfer_company(self, company_account, initial_balance, amount, expected_balance):
-        company_account.balance = initial_balance
+        company_account. balance = initial_balance
         company_account.express_transfer(amount)
-        assert company_account.balance == expected_balance
+        assert company_account. balance == expected_balance
+
+    def test_express_transfer_returns_balance(self, personal_account):
+        """Test że express_transfer zwraca balance"""
+        personal_account.balance = 101
+        result = personal_account.express_transfer(100)
+        assert result == 0
 
 class TestHistory:
 
@@ -75,3 +81,14 @@ class TestHistory:
         account.incoming_transfer(500)
         account.express_transfer(300)
         assert account.history == expected
+
+    def test_incoming_transfer_adds_to_history(self, personal_account):
+        """Test że incoming_transfer dodaje do historii"""
+        personal_account.incoming_transfer(100)
+        assert 100 in personal_account.history
+
+    def test_outgoing_transfer_adds_to_history(self, personal_account):
+        """Test że outgoing_transfer dodaje do historii"""
+        personal_account.balance = 200
+        personal_account.outgoing_transfer(50)
+        assert -50 in personal_account.history

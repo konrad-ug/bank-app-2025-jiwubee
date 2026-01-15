@@ -17,7 +17,7 @@ class TestPersonalAccount:
         first, last = valid_personal_data
         account = PersonalAccount(first, last, "12345678901")
         assert account.first_name == first
-        assert account.last_name == last
+        assert account. last_name == last
         assert account.balance == 0.0
         assert account.national_id == "12345678901"
 
@@ -34,7 +34,7 @@ class TestPersonalAccount:
     @pytest.mark.parametrize(
         "pesel,promo_code,expected_balance",
         [
-            ("87110745612", "PROM_XYZ", 50.0),   # valid age + valid code
+            ("87110745612", "PROM_XYZ", 50. 0),   # valid age + valid code
             ("12345678901", None, 0.0),          # no promo
             ("12345678901", "PROMOXYZ", 0.0),    # invalid promo code
         ]
@@ -56,6 +56,17 @@ class TestPersonalAccount:
         account = PersonalAccount(first, last, pesel, "PROM_XYZ")
         assert account.balance == expected_balance
 
+    def test_get_birth_from_national_id(self):
+        """Test metody statycznej get_birth_from_national_id"""
+        birth_year = PersonalAccount.get_birth_from_national_id("87110745612")
+        assert birth_year == 1987
+
+    def test_promo_code_with_invalid_national_id(self, valid_personal_data):
+        """Test że promo nie działa z nieprawidłowym PESEL"""
+        first, last = valid_personal_data
+        account = PersonalAccount(first, last, "123", "PROM_XYZ")
+        assert account.balance == 0.0
+
 class TestCompanyAccount:
 
     def test_create_company_account(self, valid_company_name):
@@ -70,3 +81,10 @@ class TestCompanyAccount:
     def test_create_company_account_invalid_tax_number(self, valid_company_name, tax_number):
         company_account = CompanyAccount(valid_company_name, tax_number)
         assert company_account.tax_number == "Invalid"
+
+    def test_company_account_initial_values(self, valid_company_name):
+        """Test że konto firmowe ma poprawne wartości początkowe"""
+        company_account = CompanyAccount(valid_company_name, "1234567890")
+        assert company_account. balance == 0
+        assert company_account.history == []
+        assert company_account.express_transfer_fee == 5

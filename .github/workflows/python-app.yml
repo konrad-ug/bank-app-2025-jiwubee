@@ -39,7 +39,7 @@ jobs:
           sleep 5                # Wait for the server to start
       - name: Unit test with coverage
         run: |
-          python3 -m coverage run --source=src -m pytest --ignore-glob="**/test_company_account.py"
+          python3 -m coverage run --source=src -m pytest
       - name: Show coverage report in terminal
         run: |
           python3 -m coverage report --fail-under=100

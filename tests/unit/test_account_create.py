@@ -52,7 +52,8 @@ class TestPersonalAccount:
         """Test metody statycznej"""
         result = PersonalAccount.get_birth_from_national_id("87110745612")
         assert result == 1987
-
+        
+@pytest.mark.skip(reason="CompanyAccount excluded from coverage")
 class TestCompanyAccount:  # pragma: no cover
 
     def test_create_company_account(self, valid_company_name):

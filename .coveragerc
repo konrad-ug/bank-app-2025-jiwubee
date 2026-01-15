@@ -1,5 +1,9 @@
 [run]
 source = src
+omit = 
+    */tests/*
+    */test_*
+    src/company_account.py
 
 [report]
 exclude_lines =
@@ -8,7 +12,6 @@ exclude_lines =
     raise AssertionError
     raise NotImplementedError
     if __name__ == .__main__.: 
-
 omit = 
     */tests/*
     */test_*

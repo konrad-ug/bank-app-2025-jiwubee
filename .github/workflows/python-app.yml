@@ -35,7 +35,7 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Start API server
         run: |
-          python app/main.py &   # Adjust the path and command to your app
+          python app/api.py &   # Adjust the path and command to your app
           sleep 5                # Wait for the server to start
       - name: Unit test with coverage
         run: |

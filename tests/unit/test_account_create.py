@@ -68,3 +68,19 @@ class TestCompanyAccount:
     def test_create_company_account_invalid_tax_number(self, valid_company_name, tax_number):
         company_account = CompanyAccount(valid_company_name, tax_number)
         assert company_account.tax_number == "Invalid"
+    def test_company_account_valid_nip(mocker, valid_company_name):
+        mock_response = mocker.Mock()
+        mock_response.json.return_value = {
+            "result": {
+                "subject": {
+                    "nip": "8461627563",
+                    "statusVat": "Czynny"
+                }
+            }
+        }
+
+    mocker.patch("requests.get", return_value=mock_response)
+
+    account = CompanyAccount(valid_company_name, "8461627563")
+
+    assert account.tax_number == "8461627563"

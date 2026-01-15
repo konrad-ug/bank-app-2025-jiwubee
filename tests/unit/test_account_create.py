@@ -17,9 +17,10 @@ class TestPersonalAccount:
         first, last = valid_personal_data
         account = PersonalAccount(first, last, "12345678901")
         assert account.first_name == first
-        assert account.last_name == last
+        assert account. last_name == last
         assert account.balance == 0.0
         assert account.national_id == "12345678901"
+        assert account.express_transfer_fee == 1
 
     @pytest.mark.parametrize("national_id", [
         "1234567890123",  # too long
@@ -37,6 +38,7 @@ class TestPersonalAccount:
             ("87110745612", "PROM_XYZ", 50.0),   # valid age + valid code
             ("12345678901", None, 0.0),          # no promo
             ("12345678901", "PROMOXYZ", 0.0),    # invalid promo code
+            ("55031412347", "PROM_XYZ", 0.0),    # born before 1960
         ]
     )
     def test_account_promo_code(self, valid_personal_data, pesel, promo_code, expected_balance):
@@ -44,17 +46,10 @@ class TestPersonalAccount:
         account = PersonalAccount(first, last, pesel, promo_code)
         assert account.balance == expected_balance
 
-    @pytest.mark.parametrize(
-        "pesel,expected_balance",
-        [
-            ("87110745612", 50.0),  # born after 1960 → promo applies
-            ("55031412347", 0.0),   # born before 1960 → promo ignored
-        ]
-    )
-    def test_age_validation(self, valid_personal_data, pesel, expected_balance):
-        first, last = valid_personal_data
-        account = PersonalAccount(first, last, pesel, "PROM_XYZ")
-        assert account.balance == expected_balance
+    def test_get_birth_from_national_id(self):
+        """Test metody statycznej"""
+        result = PersonalAccount.get_birth_from_national_id("87110745612")
+        assert result == 1987
 
 class TestCompanyAccount:
 
@@ -62,6 +57,9 @@ class TestCompanyAccount:
         company_account = CompanyAccount(valid_company_name, "1234567890")
         assert company_account.name == valid_company_name
         assert company_account.tax_number == "1234567890"
+        assert company_account. balance == 0
+        assert company_account.history == []
+        assert company_account.express_transfer_fee == 5
 
     @pytest.mark.parametrize("tax_number", [
         "12345678901",   # too long

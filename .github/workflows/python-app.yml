@@ -35,11 +35,8 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Start API server
         run: |
-          python app/api.py &   # Adjust the path and command to your app
+          python app/api.py &
           sleep 5                # Wait for the server to start
       - name: Unit test with coverage
         run: |
-          python3 -m coverage run --source=src -m pytest
-      - name: Show coverage report in terminal
-        run: |
-          python3 -m coverage report --fail-under=100
+          pytest --cov=src --cov-config=.coveragerc --cov-report=term-missing --cov-report=html --cov-fail-under=100

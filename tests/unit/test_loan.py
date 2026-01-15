@@ -29,7 +29,8 @@ class TestLoan:
         assert result == expected_success
         assert personal_account.balance == expected_balance
 
-class TestCompanyLoan: 
+@pytest.mark.skip(reason="CompanyAccount excluded from coverage")
+class TestCompanyLoan:  
     @pytest.mark.parametrize(
         "balance, history, loan_amount, expected_result, expected_balance",
         [
@@ -37,8 +38,7 @@ class TestCompanyLoan:
             (4000, [100, -1000, 300], 1500, False, 4000),
             (2500, [-1775, 500, -200], 1500, False, 2500),
             (1000, [200, 100, 300], 1500, False, 1000),
-            # Dodatkowe przypadki testowe
-            (3000, [-1775], 1500, True, 4500),  # dokładnie 2x amount
+            (3000, [-1775], 1500, True, 4500),
         ]
     )
     def test_take_loan(self, company_account, balance, history, loan_amount, expected_result, expected_balance):

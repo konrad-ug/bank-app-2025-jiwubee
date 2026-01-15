@@ -24,7 +24,7 @@ def test_add_and_count(registry, accounts_to_add, expected_count):
     assert registry.count() == expected_count
 
 
-@pytest.mark.parametrize(
+@pytest.mark. parametrize(
     "accounts, search_id, expected_found",
     [
         ([], "12345678901", None),
@@ -36,7 +36,7 @@ def test_add_and_count(registry, accounts_to_add, expected_count):
 )
 def test_find_by_national_id(registry, accounts, search_id, expected_found):
     for first, last, national_id in accounts:
-        registry.add_account(PersonalAccount(first, last, national_id))
+        registry. add_account(PersonalAccount(first, last, national_id))
 
     result = registry.find_by_national_id(search_id)
 
@@ -59,7 +59,7 @@ def test_get_all_accounts(registry, accounts):
     for first, last, national_id in accounts:
         registry.add_account(PersonalAccount(first, last, national_id))
 
-    result = registry.get_all_accounts()
+    result = registry. get_all_accounts()
 
     assert len(result) == len(accounts)
 

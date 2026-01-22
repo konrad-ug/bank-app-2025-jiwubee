@@ -39,4 +39,4 @@ jobs:
           sleep 5                # Wait for the server to start
       - name: Unit test with coverage
         run: |
-          pytest --cov=src --cov-config=.coveragerc --cov-report=term-missing --cov-report=html --cov-fail-under=100
+          python -m pytest --cov=src --cov-config=.coveragerc --cov-report=term-missing --cov-report=html --cov-fail-under=100

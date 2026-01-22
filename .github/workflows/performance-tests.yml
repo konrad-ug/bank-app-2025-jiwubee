@@ -1,0 +1,77 @@
+name: API Performance Tests
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  performance-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Start Flask
+      run: |
+        export FLASK_APP=app/api.py
+        export FLASK_ENV=development
+        export PYTHONPATH=$GITHUB_WORKSPACE
+        flask run &
+        sleep 5
+    
+    - name: Wait for Flask to be ready
+      run: |
+        timeout 30 bash -c 'until curl -s http://localhost:5000/health; do sleep 1; done' || echo "Health check endpoint not available, continuing..."
+    
+    - name: Execute API Performance tests
+      run: |
+        python3 -m pytest tests/perf -v -s --timeout=300 -m "not slow"
+      continue-on-error: false
+    
+    - name: Execute Bonus test (1000 accounts) - Optional
+      if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+      run: |
+        python3 -m pytest tests/perf -v -s --timeout=600 -m "slow"
+      continue-on-error: true
+    
+    - name: Upload performance test results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: performance-test-results
+        path: |
+          .pytest_cache/
+          performance-results/
+    
+    - name: Comment PR with performance results
+      if: github.event_name == 'pull_request' && failure()
+      uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '## ⚠️ Performance Test Failed\n\nPerformance tests did not meet the requirements (< 0.5s per request).\n\nPlease check the logs for details and optimize the API before merging.'
+          });
+    
+    - name: Fail workflow if performance degraded
+      if: failure()
+      run: |
+        echo "❌ Performance tests failed!"
+        echo "Some requests exceeded the 0.5s threshold or other assertions failed."
+        echo "Check the test output above for detailed statistics."
+        exit 1

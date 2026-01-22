@@ -47,4 +47,3 @@ jobs:
         name: api-test-results
         path: |
           .pytest_cache/
-          test-results/

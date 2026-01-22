@@ -133,7 +133,7 @@ class TestPeselUniqueness:
             }
             mock_responses.append(mock_resp)
         
-        mocker.patch("requests. post", side_effect=mock_responses)
+        mocker.patch("requests.post", side_effect=mock_responses)
         
         import requests
         for i, pesel in enumerate(pesels):

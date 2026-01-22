@@ -17,7 +17,7 @@ def valid_company_name():
 
 class TestPersonalAccountEmailHistory: 
     
-    @patch('src.account.SMTPClient')  # ← FIXED: mockujemy w src.account, nie src.personal_account
+    @patch('src.account.SMTPClient')
     def test_send_history_via_email_called_with_correct_parameters(
         self, mock_smtp_class, valid_personal_data
     ):
@@ -44,7 +44,7 @@ class TestPersonalAccountEmailHistory:
         )
         assert result is True
     
-    @patch('src.account.SMTPClient')  # ← FIXED
+    @patch('src.account.SMTPClient')
     def test_send_history_returns_true_on_success(
         self, mock_smtp_class, valid_personal_data
     ):
@@ -64,7 +64,7 @@ class TestPersonalAccountEmailHistory:
         # Assert
         assert result is True
     
-    @patch('src.account.SMTPClient')  # ← FIXED
+    @patch('src.account.SMTPClient')
     def test_send_history_returns_false_on_failure(
         self, mock_smtp_class, valid_personal_data
     ):
@@ -92,7 +92,7 @@ class TestPersonalAccountEmailHistory:
             ([], "Personal account history: []"),
         ]
     )
-    @patch('src.account.SMTPClient')  # ← FIXED
+    @patch('src.account.SMTPClient')
     def test_send_history_with_different_histories(
         self, mock_smtp_class, valid_personal_data, history, expected_text
     ):
@@ -119,11 +119,10 @@ class TestPersonalAccountEmailHistory:
         assert result is True
 
 
-@pytest.mark.skip(reason="CompanyAccount excluded from coverage")
-class TestCompanyAccountEmailHistory:  # pragma: no cover
+class TestCompanyAccountEmailHistory:
     
     @patch('src.company_account.CompanyAccount.check_nip_in_mf')
-    @patch('src.account.SMTPClient')  # ← FIXED
+    @patch('src.account.SMTPClient')
     def test_send_history_via_email_called_with_correct_parameters(
         self, mock_smtp_class, mock_nip, valid_company_name
     ):
@@ -151,7 +150,7 @@ class TestCompanyAccountEmailHistory:  # pragma: no cover
         assert result is True
     
     @patch('src.company_account.CompanyAccount.check_nip_in_mf')
-    @patch('src.account.SMTPClient')  # ← FIXED
+    @patch('src.account.SMTPClient')
     def test_send_history_returns_true_on_success(
         self, mock_smtp_class, mock_nip, valid_company_name
     ):
@@ -172,7 +171,7 @@ class TestCompanyAccountEmailHistory:  # pragma: no cover
         assert result is True
     
     @patch('src.company_account.CompanyAccount.check_nip_in_mf')
-    @patch('src.account.SMTPClient')  # ← FIXED
+    @patch('src.account.SMTPClient')
     def test_send_history_returns_false_on_failure(
         self, mock_smtp_class, mock_nip, valid_company_name
     ):
@@ -201,7 +200,7 @@ class TestCompanyAccountEmailHistory:  # pragma: no cover
         ]
     )
     @patch('src.company_account.CompanyAccount.check_nip_in_mf')
-    @patch('src.account.SMTPClient')  # ← FIXED
+    @patch('src.account.SMTPClient')
     def test_send_history_with_different_histories(
         self, mock_smtp_class, mock_nip, valid_company_name, history, expected_text
     ):
@@ -228,7 +227,7 @@ class TestCompanyAccountEmailHistory:  # pragma: no cover
         assert result is True
     
     @patch('src.company_account.CompanyAccount.check_nip_in_mf')
-    @patch('src.account.SMTPClient')  # ← FIXED
+    @patch('src.account.SMTPClient')
     def test_nip_validation_is_mocked(
         self, mock_smtp_class, mock_nip, valid_company_name
     ):

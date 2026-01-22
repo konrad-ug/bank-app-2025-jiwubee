@@ -38,7 +38,7 @@ jobs:
     
     - name: Execute API tests
       run: |
-        python3 -m pytest tests/api -v
+        python3 -m pytest app/api_test -v
     
     - name: Upload test results
       if: always()

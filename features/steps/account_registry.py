@@ -154,3 +154,18 @@ def field_equals_to(context, pesel, field, value):
     else:
         actual_value = account.get(field)
         assert actual_value == value, f"Expected {field} to be '{value}', but got '{actual_value}'"
+
+@then('Account with pesel "{pesel}" has balance: "{balance}"')
+def check_account_balance(context, pesel, balance):
+    response = requests.get(URL + "/api/accounts")
+    accounts = response.json()
+    
+    account = None
+    for acc in accounts:
+        if acc.get('pesel') == pesel:
+            account = acc
+            break
+    
+    assert account is not None, f"Account with pesel {pesel} not found"
+    assert account['balance'] == int(balance), \
+        f"Expected balance {balance}, but got {account['balance']}"

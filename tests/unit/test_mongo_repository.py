@@ -1,5 +1,12 @@
 import pytest
-from ..app.repositories.mongo_accounts_repository import MongoAccountsRepository
+import sys
+from pathlib import Path
+
+# Dodaj główny katalog projektu do ścieżki
+project_root = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(project_root))
+
+from app.repositories.mongo_accounts_repository import MongoAccountsRepository
 
 class TestMongoAccountsRepository:
     
@@ -88,3 +95,16 @@ class TestMongoAccountsRepository:
         
         # Sprawdzenie czy delete_many zostało wywołane
         mock_collection.delete_many.assert_called_once_with({})
+    
+    def test_save_all_empty_list(self, mocker):
+        """Test save_all z pustą listą"""
+        mock_collection = mocker.Mock()
+        
+        repo = MongoAccountsRepository()
+        repo._collection = mock_collection
+        
+        repo.save_all([])
+        
+        # Tylko delete_many powinno być wywołane
+        mock_collection.delete_many.assert_called_once()
+        mock_collection.update

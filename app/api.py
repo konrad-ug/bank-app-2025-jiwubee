@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from repositories.mongo_accounts_repository import MongoAccountsRepository
 
 app = Flask(__name__)
 
@@ -7,6 +8,9 @@ accounts = {}
 next_account_id = 1
 # Zbiór do śledzenia użytych PESELów
 used_pesels = set()
+
+# Inicjalizacja repozytorium MongoDB
+mongo_repo = MongoAccountsRepository()
 
 @app.route('/api/accounts', methods=['GET'])
 def get_accounts():
@@ -31,6 +35,7 @@ def create_account():
         return jsonify({"error": "No data provided"}), 400
     
     name = data.get('name')
+    surname = data.get('surname')
     balance = data.get('balance', 0)
     pesel = data.get('pesel')
     
@@ -49,6 +54,7 @@ def create_account():
     account = {
         'id': next_account_id,
         'name': name,
+        'surname': surname,
         'balance': balance,
         'pesel': pesel
     }
@@ -73,6 +79,8 @@ def update_account(account_id):
     
     if 'name' in data:
         account['name'] = data['name']
+    if 'surname' in data:
+        account['surname'] = data['surname']
     if 'balance' in data:  
         account['balance'] = data['balance']
     
@@ -133,7 +141,7 @@ def transfer(pesel):
     account = None
     account_id = None
     for acc_id, acc in accounts.items():
-        if acc. get('pesel') == pesel:
+        if acc.get('pesel') == pesel:
             account = acc
             account_id = acc_id
             break
@@ -154,7 +162,7 @@ def transfer(pesel):
         return jsonify({"error": "Amount is required"}), 400
     
     if not isinstance(amount, (int, float)) or amount <= 0:
-        return jsonify({"error":  "Invalid amount"}), 400
+        return jsonify({"error": "Invalid amount"}), 400
     
     # Walidacja typu
     if transfer_type not in ['incoming', 'outgoing', 'express']:
@@ -181,7 +189,7 @@ def transfer(pesel):
         account['balance'] -= amount
         return jsonify({
             "message": "Zlecenie przyjęto do realizacji",
-            "account":  account
+            "account": account
         }), 200
     
     elif transfer_type == 'express':
@@ -192,7 +200,7 @@ def transfer(pesel):
         if account['balance'] < total_amount:
             return jsonify({
                 "error": "Insufficient funds for express transfer",
-                "balance":  account['balance'],
+                "balance": account['balance'],
                 "requested_amount": amount,
                 "express_fee": express_fee,
                 "total_required": total_amount
@@ -204,6 +212,62 @@ def transfer(pesel):
             "account": account,
             "express_fee": express_fee
         }), 200
+
+# Feature 20: Zrzut Rejestru kont
+@app.route('/api/accounts/save', methods=['POST'])
+def save_accounts():
+    """Zapisz wszystkie konta do bazy danych"""
+    try:
+        # Pobierz wszystkie konta z pamięci
+        accounts_list = list(accounts.values())
+        
+        # Zapisz do MongoDB
+        mongo_repo.save_all(accounts_list)
+        
+        return jsonify({
+            "message": "Accounts saved successfully",
+            "count": len(accounts_list)
+        }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/accounts/load', methods=['POST'])
+def load_accounts():
+    """Załaduj wszystkie konta z bazy danych"""
+    global accounts, next_account_id, used_pesels
+    
+    try:
+        # Wyczyść obecne konta
+        accounts = {}
+        used_pesels = set()
+        
+        # Załaduj konta z MongoDB
+        loaded_accounts = mongo_repo.load_all()
+        
+        # Dodaj konta do pamięci
+        max_id = 0
+        for account in loaded_accounts:
+            account_id = account.get('id')
+            accounts[account_id] = account
+            
+            # Dodaj PESEL do zbioru używanych
+            pesel = account.get('pesel')
+            if pesel:
+                used_pesels.add(pesel)
+            
+            # Śledź maksymalne ID
+            if account_id > max_id:
+                max_id = account_id
+        
+        # Ustaw next_account_id
+        next_account_id = max_id + 1
+        
+        return jsonify({
+            "message": "Accounts loaded successfully",
+            "count": len(loaded_accounts)
+        }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':  
     app.run(debug=True, port=5000)

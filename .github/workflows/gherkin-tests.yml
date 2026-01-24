@@ -1,0 +1,26 @@
+name: Behave Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      mongodb:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - run: |
+        pip install -r requirements.txt
+        python app/api.py &
+        sleep 5
+        behave
